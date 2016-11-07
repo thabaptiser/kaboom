@@ -23,7 +23,7 @@ def answer_question(question, counter, tfidf, doc):
   answers = temp
   a = sorted(answers,key=lambda tup: tup[1], reverse=True)
   return a, q_type
-def extract_answers(answers,question_type):
+def extract_answers(answers,question_type, orig_sentence_tokens):
   top_sentences = []
   top_ranks = []
   for i,(ind,rank) in enumerate(answers):
@@ -49,7 +49,7 @@ def answer(text, question):
   answers, q_type = answer_question(question, counter, tfidf, matrix)
     
     
-  best_answers, top_ranks = extract_answers(answers,q_type)
+  best_answers, top_ranks = extract_answers(answers,q_type, orig_sentence_tokens)
   return best_answers[0],top_ranks[0]
 
   # parses = pc.parsed_sentences(orig_sentence_tokens)
