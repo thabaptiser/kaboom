@@ -25,47 +25,59 @@ def answer_question(question, counter, tfidf, doc):
   return a, q_type
 def extract_answers(answers,question_type):
   top_sentences = []
+  top_ranks = []
   for i,(ind,rank) in enumerate(answers):
     top_sentences.append(orig_sentence_tokens[ind]) 
+    top_ranks.append(rank)
     if i > 20:
       break
-  good_sentences = []
-  for sent in top_sentences:
-    toks = tokenizer.tokenize_by_word(sent)
-    if len(toks) > 4:
-      good_sentences.append(sent)
+  # good_sentences = []
+  # for sent in top_sentences:
+  #   toks = tokenizer.tokenize_by_word(sent)
+  #   if len(toks) > 4:
+  #     good_sentences.append(sent)
   # if question_type == "how":
   #   ind, rank = answers[0]
   #   return orig_sentence_tokens[ind-1] + orig_sentence_tokens[ind]  
-  return good_sentences
+  return top_sentences,top_ranks
 
 def answer(text, question):
-  
-orig_sentence_tokens = pc.process_corpus(sys.argv[1], stem=False, lemmatize=False, stopword=False)
-sentence_tokens = pc.process_corpus(sys.argv[1], stem=False, lemmatize=True)
-matrix, tfidf, counter = pc.tfidf_matrix(sentence_tokens)
-parses = pc.parsed_sentences(orig_sentence_tokens)
+  orig_sentence_tokens = pc.process_corpus(text=text, stem=False, lemmatize=False, stopword=False)
+  sentence_tokens = pc.process_corpus(text=text, stem=True, lemmatize=True)
+  matrix, tfidf, counter = pc.tfidf_matrix(sentence_tokens)
+
+  answers, q_type = answer_question(question, counter, tfidf, matrix)
+    
+    
+  best_answers, top_ranks = extract_answers(answers,q_type)
+  return best_answers[0],top_ranks[0]
+
+  # parses = pc.parsed_sentences(orig_sentence_tokens)
+# orig_sentence_tokens = pc.process_corpus(sys.argv[1], stem=False, lemmatize=False, stopword=False)
+# sentence_tokens = pc.process_corpus(sys.argv[1], stem=False, lemmatize=True)
+# matrix, tfidf, counter = pc.tfidf_matrix(sentence_tokens)
+# parses = pc.parsed_sentences(orig_sentence_tokens)
 # parses[1].pretty_print()
 # print matrix
-try:
-  with open(sys.argv[2]) as f:
-    for question in f:
-      print "\n" + question + "\n"
-      answers, q_type = answer_question(question, counter, tfidf, matrix)
+# try:
+#   with open(sys.argv[2]) as f:
+#     for question in f:
+#       print "\n" + question + "\n"
+#       answers, q_type = answer_question(question, counter, tfidf, matrix)
       
       
-      best_answer = extract_answers(answers,q_type)
-      print best_answer[0]
-except: 
-  while True:
-    question=raw_input("What's your question? \n")
-    answers, q_type = answer_question(question, counter, tfidf, matrix)
+#       best_answer = extract_answers(answers,q_type)
+#       print best_answer[0]
+# except: 
+#   while True:
+#     question=raw_input("What's your question? \n")
+#     answers, q_type = answer_question(question, counter, tfidf, matrix)
       
       
-    best_answer = extract_answers(answers,q_type)
-    for i in best_answer:
-      print i
-      break
+#     best_answer = extract_answers(answers,q_type)
+#     for i in best_answer:
+#       print i
+#       break
         
     
     
