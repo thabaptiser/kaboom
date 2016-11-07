@@ -1,7 +1,7 @@
 import process_corpus as pc
 import sys
 from sklearn.metrics import pairwise
-import fuzzymatch as fm
+
 import tokenizer
 from nltk import Tree
 
@@ -30,7 +30,7 @@ def extract_answers(answers,question_type):
     if i > 20:
       break
   good_sentences = []
-  for sent in top_sentences:https://github.com/glaser06
+  for sent in top_sentences:
     toks = tokenizer.tokenize_by_word(sent)
     if len(toks) > 4:
       good_sentences.append(sent)
@@ -38,6 +38,8 @@ def extract_answers(answers,question_type):
   #   ind, rank = answers[0]
   #   return orig_sentence_tokens[ind-1] + orig_sentence_tokens[ind]  
   return good_sentences
+
+def answer(text, question):
   
 orig_sentence_tokens = pc.process_corpus(sys.argv[1], stem=False, lemmatize=False, stopword=False)
 sentence_tokens = pc.process_corpus(sys.argv[1], stem=False, lemmatize=True)

@@ -6,6 +6,7 @@ import process_corpus as pc
 import re
 import urllib2
 import time
+import string
 wiki = "https://en.wikipedia.org/wiki/{page}"
 
 def scrape_page(url):
@@ -33,7 +34,7 @@ def scrape_page(url):
   try:
     new_page = Page.nodes.get(link=unicode(url, "utf-8"))
     if new_page.page_text == data:
-    	return
+      return
     else:
         new_page.delete()
   except Page.DoesNotExist:
@@ -45,7 +46,8 @@ def scrape_page(url):
   temp = []
   for sent in data:
     for word in tokenizer.tokenize_by_word(sent):
-      temp.append(word)
+      if word not in string.punctuation:
+        temp.append(word)
   data = temp
   for i in set(data):
     i = i.lower()
