@@ -10,7 +10,7 @@ def process_question(question, counter, tfidf):
   term_doc = counter.transform([question])
   norm_matrix = tfidf.transform(term_doc)
   tokens = tokenizer.tokenize_by_word(question)
-  question_type = [wh.lower() for wh in tokens if wh.lower() in ["where","when","what","why","how","who","did","is","are","does", "do"]][0]
+  question_type = "" # [wh.lower() for wh in tokens if wh.lower() in ["where","when","what","why","how","who","did","is","are","does", "do"]][0]
   return norm_matrix,question_type
 
 def answer_question(question, counter, tfidf, doc):
