@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
 from threading import Thread
 from n4j import Page, Word
+import tokenizer
+import process_corpus as pc
 import re
 import urllib2
 import time
@@ -37,12 +39,18 @@ def scrape_page(url):
   except Page.DoesNotExist:
     pass
   new_page = Page(link=unicode(url, "utf-8"), page_text=data).save()
-  data = re.sub('[^a-z\ \']+', " ", data)
-  data = list(data.split())
+  # data = re.sub('[^a-z\ \']+', " ", data)
+  # data = [tokenizer.tokenize_by_word(t) for t in tokenizer.tokenize_by_sentence(data)]
+  data = pc.process_corpus(text=data)
+  temp = []
+  for sent in data:
+    for word in tokenizer.tokenize_by_word(sent):
+      temp.append(word)
+  data = temp
   for i in set(data):
     i = i.lower()
-    if len(i) < 3:
-      continue
+    # if len(i) < 3:
+    #   continue
     try:
       w = Word(text=i.decode('utf-8')).save()
     except:
